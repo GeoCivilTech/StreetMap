@@ -1,8 +1,11 @@
 #include "StreetMapImporting.h"
 #include "StreetMapAssetTypeActions.h"
+
+#include "AssetToolsModule.h"
 #include "Modules/ModuleManager.h"
-#include "StreetMapStyle.h"
+#include "PropertyEditorModule.h"
 #include "StreetMapComponentDetails.h"
+#include "StreetMapStyle.h"
 
 class FStreetMapImportingModule : public IModuleInterface
 {

@@ -1,7 +1,10 @@
 #include "StreetMapSceneProxy.h"
+
 #include "StreetMapComponent.h"
+#include "Engine/Engine.h"
+#include "Materials/Material.h"
 #include "Materials/MaterialRenderProxy.h"
-#include "Runtime/Engine/Public/SceneManagement.h"
+#include "SceneManagement.h"
 
 FStreetMapSceneProxy::FStreetMapSceneProxy(const UStreetMapComponent* InComponent)
 	: FPrimitiveSceneProxy(InComponent),
@@ -12,7 +15,7 @@ FStreetMapSceneProxy::FStreetMapSceneProxy(const UStreetMapComponent* InComponen
 {
 }
 
-void FStreetMapSceneProxy::Init(const UStreetMapComponent* InComponent, const TArray< FStreetMapVertex >& Vertices, const TArray< uint32 >& Indices)
+void FStreetMapSceneProxy::Init(const UStreetMapComponent* InComponent, const TArray<FStreetMapVertex>& Vertices, const TArray<uint32>& Indices)
 {
 	// Copy index buffer
 	IndexBuffer32.Indices = Indices;
@@ -116,28 +119,13 @@ bool FStreetMapSceneProxy::CanBeOccluded() const
 }
 
 
-void FStreetMapSceneProxy::MakeMeshBatch( FMeshBatch& Mesh, FMaterialRenderProxy* WireframeMaterialRenderProxyOrNull, bool bDrawCollision) const
+void FStreetMapSceneProxy::MakeMeshBatch(FMeshBatch& Mesh, FMaterialRenderProxy* MaterialRenderProxy, bool bInWireframe) const
 {
-	FMaterialRenderProxy* MaterialProxy = nullptr;
-	if( WireframeMaterialRenderProxyOrNull != nullptr )
-	{
-		MaterialProxy = WireframeMaterialRenderProxyOrNull;
-	}
-	else
-	{
-		if (bDrawCollision)
-		{
-			MaterialProxy = new FColoredMaterialRenderProxy(GEngine->ShadedLevelColorationUnlitMaterial->GetRenderProxy(), FColor::Cyan);
-		}
-		else if (MaterialProxy == nullptr)
-		{
-			MaterialProxy = StreetMapComp->GetDefaultMaterial()->GetRenderProxy();
-		}
-	}
-	
+	FMaterialRenderProxy* MaterialProxy = MaterialRenderProxy != nullptr ? MaterialRenderProxy : StreetMapComp->GetDefaultMaterial()->GetRenderProxy();
+
 	FMeshBatchElement& BatchElement = Mesh.Elements[0];
 	BatchElement.IndexBuffer = &IndexBuffer32;
-	Mesh.bWireframe = WireframeMaterialRenderProxyOrNull != nullptr;
+	Mesh.bWireframe = bInWireframe;
 	Mesh.VertexFactory = &VertexFactory;
 	Mesh.MaterialRenderProxy = MaterialProxy;
 	Mesh.CastShadow = true;
@@ -161,7 +149,7 @@ void FStreetMapSceneProxy::DrawStaticElements( FStaticPrimitiveDrawInterface* PD
 		const float ScreenSize = 1.0f;
 
 		FMeshBatch MeshBatch;
-		MakeMeshBatch( MeshBatch, nullptr);
+		MakeMeshBatch(MeshBatch, nullptr, false);
 		PDI->DrawMesh( MeshBatch, ScreenSize );
 	}
 }
@@ -178,7 +166,11 @@ void FStreetMapSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*
 
 			const bool bIsWireframe = AllowDebugViewmodes() && View.Family->EngineShowFlags.Wireframe;
 
-			FColoredMaterialRenderProxy* WireframeMaterialRenderProxy = GEngine->WireframeMaterial && bIsWireframe ? new FColoredMaterialRenderProxy(GEngine->WireframeMaterial->GetRenderProxy(), FLinearColor(0, 0.5f, 1.f)) : nullptr;
+			FMaterialRenderProxy* WireframeMaterialRenderProxy = nullptr;
+			if (GEngine->WireframeMaterial && bIsWireframe)
+			{
+				WireframeMaterialRenderProxy = Collector.RegisterOneFrameMaterialProxy(new FColoredMaterialRenderProxy(GEngine->WireframeMaterial->GetRenderProxy(), FLinearColor(0, 0.5f, 1.f)));
+			}
 
 			if (MustDrawMeshDynamically(View))
 			{
@@ -190,9 +182,15 @@ void FStreetMapSceneProxy::GetDynamicMeshElements(const TArray<const FSceneView*
 					continue;
 				}
 
+				FMaterialRenderProxy* MaterialProxy = WireframeMaterialRenderProxy;
+				if (MaterialProxy == nullptr && bCanDrawCollision)
+				{
+					MaterialProxy = Collector.RegisterOneFrameMaterialProxy(new FColoredMaterialRenderProxy(GEngine->ShadedLevelColorationUnlitMaterial->GetRenderProxy(), FColor::Cyan));
+				}
+
 				// Draw the mesh!
 				FMeshBatch& MeshBatch = Collector.AllocateMesh();
-				MakeMeshBatch(MeshBatch, WireframeMaterialRenderProxy, bCanDrawCollision);
+				MakeMeshBatch(MeshBatch, MaterialProxy, bIsWireframe);
 				Collector.AddMesh(ViewIndex, MeshBatch);
 			}
 		}

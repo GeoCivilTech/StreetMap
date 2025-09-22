@@ -1,4 +1,6 @@
 #pragma once
+
+#include "CoreMinimal.h"
 #include "FastXml.h"
 
 /** OpenStreetMap file loader */

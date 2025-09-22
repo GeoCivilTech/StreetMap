@@ -1,4 +1,6 @@
 #pragma once
+
+#include "CoreMinimal.h"
 #include "Factories/Factory.h"
 #include "StreetMapFactory.generated.h"
 

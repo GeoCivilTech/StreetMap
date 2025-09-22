@@ -1,11 +1,12 @@
 #pragma once
+#include "CoreMinimal.h"
 #include "Math/MathFwd.h"
 #include "StreetMap.generated.h"
 
 USTRUCT(BlueprintType)
 struct STREETMAPRUNTIME_API FStreetMapCollisionSettings
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 
 public:
 
@@ -35,7 +36,7 @@ public:
 USTRUCT(BlueprintType)
 struct STREETMAPRUNTIME_API FStreetMapMeshBuildSettings
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 
 public:
 
@@ -137,7 +138,7 @@ enum EStreetMapRoadType
 USTRUCT( BlueprintType )
 struct STREETMAPRUNTIME_API FStreetMapRoad
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 
 	/** Name of the road */
 	UPROPERTY( Category=StreetMap, EditAnywhere )
@@ -225,7 +226,7 @@ struct STREETMAPRUNTIME_API FStreetMapRoad
 USTRUCT( BlueprintType )
 struct STREETMAPRUNTIME_API FStreetMapRoadRef
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 
 	/** Index of road in the list of all roads in this street map */
 	UPROPERTY( Category=StreetMap, EditAnywhere )
@@ -241,7 +242,7 @@ struct STREETMAPRUNTIME_API FStreetMapRoadRef
 USTRUCT( BlueprintType )
 struct STREETMAPRUNTIME_API FStreetMapNode
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 	
 	/** All of the roads that intersect this node.  We have references to each of these roads, as well as the point along each
 	    road where this node exists */
@@ -280,7 +281,7 @@ struct STREETMAPRUNTIME_API FStreetMapNode
 USTRUCT( BlueprintType )
 struct STREETMAPRUNTIME_API FStreetMapBuilding
 {
-	GENERATED_USTRUCT_BODY()
+        GENERATED_BODY()
 
 	/** Name of the building */
 	UPROPERTY( Category=StreetMap, EditAnywhere )
