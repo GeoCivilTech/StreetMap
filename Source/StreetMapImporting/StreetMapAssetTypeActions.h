@@ -1,4 +1,6 @@
 #pragma once
+
+#include "CoreMinimal.h"
 #include "AssetTypeActions_Base.h"
 
 class FStreetMapAssetTypeActions : public FAssetTypeActions_Base

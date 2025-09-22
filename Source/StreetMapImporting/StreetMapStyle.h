@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CoreMinimal.h"
+
 /** StreetMap Editor Style Helper Class. */
 class FStreetMapStyle
 {

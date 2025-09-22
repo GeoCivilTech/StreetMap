@@ -1,12 +1,13 @@
 #pragma once
-#include "StreetMap.h"
+#include "CoreMinimal.h"
 #include "Components/MeshComponent.h"
 #include "Interfaces/Interface_CollisionDataProvider.h"
-#include "MaterialDomain.h"
-#include "../StreetMapSceneProxy.h"
+#include "StreetMap.h"
+#include "StreetMapVertex.h"
 #include "StreetMapComponent.generated.h"
 
 class UBodySetup;
+class UMaterialInterface;
 
 /**
  * Component that represents a section of street map roads and buildings
@@ -37,7 +38,7 @@ public:
 	}
 
 	/** Returns Cached raw mesh vertices */
-	TArray< struct FStreetMapVertex > GetRawMeshVertices() const
+        TArray<FStreetMapVertex> GetRawMeshVertices() const
 	{
 		return Vertices;
 	}
@@ -52,10 +53,7 @@ public:
 	* Returns StreetMap Default Material if a valid one is found in plugin's content folder.
 	* Otherwise , it returns the default surface 3d material.
 	*/
-	UMaterialInterface* GetDefaultMaterial() const
-	{
-		return StreetMapDefaultMaterial != nullptr ? StreetMapDefaultMaterial : UMaterial::GetDefaultMaterial(MD_Surface);
-	}
+        UMaterialInterface* GetDefaultMaterial() const;
 
 	/** Returns true, if the input PropertyName correspond to a collision property. */
 	bool IsCollisionProperty(const FName& PropertyName) const 
@@ -167,8 +165,8 @@ protected:
 	//
 
 	/** Cached raw mesh vertices */
-	UPROPERTY()
-	TArray< struct FStreetMapVertex > Vertices;
+        UPROPERTY()
+        TArray<FStreetMapVertex> Vertices;
 
 	/** Cached raw mesh triangle indices */
 	UPROPERTY()

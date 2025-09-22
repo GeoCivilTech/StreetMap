@@ -1,10 +1,15 @@
 #include "StreetMapComponent.h"
+
 #include "StreetMapSceneProxy.h"
 #include "NavigationSystem.h"
-#include "Runtime/Engine/Classes/Engine/StaticMesh.h"
-#include "Runtime/Engine/Public/StaticMeshResources.h"
+#include "Engine/CollisionProfile.h"
+#include "Engine/StaticMesh.h"
+#include "Materials/Material.h"
 #include "PolygonTools.h"
+#include "Rendering/StaticMeshVertexBuffer.h"
+#include "StaticMeshResources.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "UObject/ConstructorHelpers.h"
 
 #if WITH_EDITOR
 #include "Modules/ModuleManager.h"
@@ -12,9 +17,9 @@
 #endif //WITH_EDITOR
 
 UStreetMapComponent::UStreetMapComponent(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  StreetMap(nullptr),
-	  CachedLocalBounds(ForceInit)
+	: Super(ObjectInitializer)
+	, StreetMap(nullptr)
+	, CachedLocalBounds(ForceInit)
 {
 	// We make sure our mesh collision profile name is set to NoCollisionProfileName at initialization. 
 	// Because we don't have collision data yet!
@@ -40,6 +45,11 @@ UStreetMapComponent::UStreetMapComponent(const FObjectInitializer& ObjectInitial
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DefaultMaterialAsset(TEXT("/StreetMap/StreetMapDefaultMaterial"));
 	StreetMapDefaultMaterial = DefaultMaterialAsset.Object;
 
+}
+
+UMaterialInterface* UStreetMapComponent::GetDefaultMaterial() const
+{
+	return StreetMapDefaultMaterial != nullptr ? StreetMapDefaultMaterial : UMaterial::GetDefaultMaterial(MD_Surface);
 }
 
 

@@ -1,7 +1,9 @@
 #include "StreetMapAssetTypeActions.h"
+
 #include "StreetMap.h"
 #include "AssetRegistry/AssetData.h"
 #include "EditorFramework/AssetImportData.h"
+#include "Toolkits/SimpleAssetEditor.h"
 
 #define LOCTEXT_NAMESPACE "StreetMapImporting"
 

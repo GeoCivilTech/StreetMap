@@ -1,20 +1,27 @@
-namespace UnrealBuildTool.Rules
+using UnrealBuildTool;
+
+public class StreetMapRuntime : ModuleRules
 {
-	public class StreetMapRuntime : ModuleRules
-	{
-        public StreetMapRuntime(ReadOnlyTargetRules Target)
-			: base(Target)
-		{
-			PrivateDependencyModuleNames.AddRange(
-				new string[] {
-                    "Core",
-					"CoreUObject",
-					"Engine",
-					"RHI",
-					"RenderCore",
-                    "NavigationSystem"
-                }
-			);
-		}
-	}
+    public StreetMapRuntime(ReadOnlyTargetRules Target)
+        : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
+        PublicDependencyModuleNames.AddRange(
+            new[]
+            {
+                "Core",
+                "CoreUObject",
+                "Engine"
+            });
+
+        PrivateDependencyModuleNames.AddRange(
+            new[]
+            {
+                "NavigationSystem",
+                "PhysicsCore",
+                "RenderCore",
+                "RHI"
+            });
+    }
 }
